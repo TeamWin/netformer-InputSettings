@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 
 public class InputSettings extends Activity {
+    private String sysfsTapToClickLocation = "/sys/devices/platform/tegra-i2c.1/i2c-2/2-0019/tap_toggle";
     private static final String LOG_TAG = "InputSettings: ";
 
     /** Called when the activity is first created. */
@@ -21,11 +22,11 @@ public class InputSettings extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
+
         // Set Tap to Click checkbox listener
         CheckBox cbTapToClick = (CheckBox) findViewById(R.id.cbTapToClick);
         cbTapToClick.setOnClickListener(cbTapToClick_OnClick);
-        
+
         boolean rooted = canSU();
         if (rooted) {
             // Do good stuff
@@ -52,7 +53,7 @@ public class InputSettings extends Activity {
         Process process = null;
 
         // Set the command
-        String cmd = String.format("echo %s > /sys/devices/platform/tegra-i2c.1/i2c-2/2-0019/tap_toggle\n", enabled ? "1" : "0");
+        String cmd = String.format("echo %s > " + sysfsTapToClickLocation + "\n", enabled ? "1" : "0");
 
         int exitValue = -1;
         try {
@@ -65,26 +66,24 @@ public class InputSettings extends Activity {
             process = null;
             exitValue = -1;
         }
-        return exitValue == 0;			
+        return exitValue == 0;
     }
 
     private boolean canTapToClick() {
-        boolean canTapToClick = false;
 
         try {
-            File file = new File("/sys/devices/platform/tegra-i2c.1/i2c-2/2-0019/tap_toggle");
+            File file = new File(sysfsTapToClickLocation);
             BufferedReader data = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             String line = data.readLine();
             line = line.trim();
 
-            canTapToClick = (line.charAt(0) == '1');
+            return (line.charAt(0) == '1');
 
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Exception while trying to open /sys/devices/platform/tegra-i2c.1/i2c-2/2-0019/tap_toggle " + e.getMessage());
-            canTapToClick = false;
+            Log.e(LOG_TAG, "Exception while trying to open " + sysfsTapToClickLocation + " : " + e.getMessage());
+            return  false;
         }
 
-        return canTapToClick;
     }
 
     // Kanged from joeykrim - http://www.joeykrim.com :P
