@@ -1,4 +1,4 @@
-package org.teamw.in.inputsettings;
+package com.teamwin.inputsettings;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
