@@ -46,7 +46,7 @@ public class InputSettings extends Activity {
 		Process process = null;
 		
 		// Set the command
-		String cmd = String.format("echo %s > /sys/devices/platform/tegra-i2c.1/i2c-2/2-0019/tap_toggle", enabled ? "1" : "0");
+		String cmd = String.format("echo %s > /sys/devices/platform/tegra-i2c.1/i2c-2/2-0019/tap_toggle\n", enabled ? "1" : "0");
 		
 		int exitValue = -1;
 		try {
