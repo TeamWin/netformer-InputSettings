@@ -1,6 +1,10 @@
 package org.teamw.in.inputsettings;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -25,6 +29,8 @@ public class InputSettings extends Activity {
         boolean rooted = canSU();
         if (rooted) {
         	// Do good stuff
+        	boolean ttcEnabled = canTapToClick();
+        	cbTapToClick.setChecked(ttcEnabled);
         }
         else {
         	// Display error
@@ -60,6 +66,25 @@ public class InputSettings extends Activity {
 			exitValue = -1;
 		}
 		return exitValue == 0;			
+	}
+	
+	private boolean canTapToClick() {
+		boolean canTapToClick = false;
+		
+		try {
+			File file = new File("/sys/devices/platform/tegra-i2c.1/i2c-2/2-0019/tap_toggle");
+			BufferedReader data = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+			String line = data.readLine();
+			line = line.trim();
+			
+			canTapToClick = (line.charAt(0) == '1');
+			
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "Exception while trying to open /sys/devices/platform/tegra-i2c.1/i2c-2/2-0019/tap_toggle " + e.getMessage());
+			canTapToClick = false;
+		}
+		
+		return canTapToClick;
 	}
     
     // Kanged from joeykrim :P
