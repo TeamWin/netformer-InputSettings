@@ -6,14 +6,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 
-public class InputSettings extends Activity {
+public class InputSettings extends PreferenceActivity {
     private String sysfsTapToClickLocation = "/sys/devices/platform/tegra-i2c.1/i2c-2/2-0019/tap_toggle";
     private static final String LOG_TAG = "InputSettings: ";
 
@@ -21,33 +24,51 @@ public class InputSettings extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        addPreferencesFromResource(R.xml.netformer_settings);
 
         // Set Tap to Click checkbox listener
-        CheckBox cbTapToClick = (CheckBox) findViewById(R.id.cbTapToClick);
-        cbTapToClick.setOnClickListener(cbTapToClick_OnClick);
-
+//        CheckBox cbTapToClick = (CheckBox) findViewById(R.id.cbTapToClick);
+//        cbTapToClick.setOnClickListener(cbTapToClick_OnClick);
+        
+        CheckBoxPreference cbpTapToClick = (CheckBoxPreference) findPreference("tap_to_click_enable_key");
+        cbpTapToClick.setOnPreferenceClickListener(cbpTapToClick_OnPreferenceClick);
+        
         boolean rooted = canSU();
         if (rooted) {
             // Do good stuff
             boolean ttcEnabled = canTapToClick();
-            cbTapToClick.setChecked(ttcEnabled);
+            //cbTapToClick.setChecked(ttcEnabled);
+            cbpTapToClick.setChecked(ttcEnabled);
         }
         else {
             // Display error
-            cbTapToClick.setEnabled(rooted);
+            //cbTapToClick.setEnabled(rooted);
+            cbpTapToClick.setEnabled(rooted);
         }
     }
 
-    private OnClickListener cbTapToClick_OnClick = new OnClickListener() {
+    private OnPreferenceClickListener cbpTapToClick_OnPreferenceClick = new OnPreferenceClickListener() {
+		
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			// Perform action on clicks, depending on whether it's now checked
+            boolean checked = ((CheckBoxPreference) preference).isChecked();
 
-        public void onClick(View v) {
-            // Perform action on clicks, depending on whether it's now checked
-            boolean checked = ((CheckBox) v).isChecked();
-
-            setTapToClick(checked);
-        }
-    };
+            boolean success = setTapToClick(checked);			
+			
+			return success;
+		}
+	};
+   
+//    private OnClickListener cbTapToClick_OnClick = new OnClickListener() {
+//
+//        public void onClick(View v) {
+//            // Perform action on clicks, depending on whether it's now checked
+//            boolean checked = ((CheckBox) v).isChecked();
+//
+//            setTapToClick(checked);
+//        }
+//    };
 
     private boolean setTapToClick(boolean enabled) {
         Process process = null;
