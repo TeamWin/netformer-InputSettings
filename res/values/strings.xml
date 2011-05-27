@@ -3,4 +3,7 @@
     <string name="hello">Hello World, InputSettings!</string>
     <string name="app_name">Input Settings</string>
     <string name="tap_to_click">Tap to Click</string>
+    <string name="tap_to_click_sum_on">Tap to click is enabled</string>
+    <string name="tap_to_click_sum_off">Tap to click is NOT enabled</string>
+    <string name="tap_to_click_enable_key">tap_to_click_enable_key</string>
 </resources>
