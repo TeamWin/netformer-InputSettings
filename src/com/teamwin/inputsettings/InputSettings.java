@@ -51,16 +51,16 @@ public class InputSettings extends Activity {
 
     private boolean setTapToClick(boolean enabled) {
         Process process = null;
-
+        int exitValue = -1;
         // Set the command
         String cmd = String.format("echo %s > " + sysfsTapToClickLocation + "\n", enabled ? "1" : "0");
 
-        int exitValue = -1;
         try {
             process = Runtime.getRuntime().exec("su");
             DataOutputStream toProcess = new DataOutputStream(process.getOutputStream());
             toProcess.writeBytes(cmd);
             toProcess.flush();
+            exitValue = process.waitFor();
         } catch (Exception e) {
             Log.e(LOG_TAG, "Exception while trying to run: '" + cmd + "' " + e.getMessage());
             process = null;
