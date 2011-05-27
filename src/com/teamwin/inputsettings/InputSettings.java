@@ -15,7 +15,7 @@ import android.widget.CheckBox;
 
 public class InputSettings extends Activity {
     private String sysfsTapToClickLocation = "/sys/devices/platform/tegra-i2c.1/i2c-2/2-0019/tap_toggle";
-    private static final String LOG_TAG = "InputSettings: ";
+    private static final String LOG_TAG = "TTC-InputSettings: ";
 
     /** Called when the activity is first created. */
     @Override
@@ -81,12 +81,12 @@ public class InputSettings extends Activity {
 
         } catch (Exception e) {
             Log.e(LOG_TAG, "Exception while trying to open " + sysfsTapToClickLocation + " : " + e.getMessage());
-            return  false;
+            return false;
         }
 
     }
 
-    // Kanged from joeykrim - http://www.joeykrim.com :P
+    // Kanged from joeykrim - http://www.joeykrim.com
     private boolean canSU() {
         Process process = null;
         int exitValue = -1;
